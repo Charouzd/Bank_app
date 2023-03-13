@@ -23,18 +23,24 @@ def register(request):
         account_number = request.POST['username']
         account_password = request.POST['password']
         account_mail = request.POST['mail']
-        if User.objects.filter(username=account_number):
-            messages.error(request, "Username already exist! Please try some other username.")
-            return redirect('home')
+        # if User.objects.filter(username=account_number):
+        #     messages.error(request, "Username already exist! Please try some other username.")
+        #     return redirect('')
         
-        if User.objects.filter(email=account_mail).exists():
-            messages.error(request, "Email Already Registered!!")
-            return redirect('home')
+        # if User.objects.filter(email=account_mail).exists():
+        #     messages.error(request, "Email Already Registered!!")
+        #     return redirect('')
         
-        if len(account_number)>20:
-            messages.error(request, "Username must be under 20 charcters!!")
-            return redirect('home')
-        
+        # if len(account_number)>20:
+        #     messages.error(request, "Username must be under 20 charcters!!")
+        #     return redirect('')
+        myuser = User.objects.create_user(account_number, account_mail, account_password)
+        myuser.first_name = account_name
+        # myuser.is_active = False
+        myuser.is_active = False
+        myuser.save()
+        messages.success(request, "Your Account has been created succesfully!! Please check your email to confirm your email address in order to activate your account.")
+        return render(request,'index.html')
     return render(request,"register.html")
 
     

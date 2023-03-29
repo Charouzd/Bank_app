@@ -20,3 +20,8 @@ class Currencies():
             return ammount*self.courses[currency]
         else:
             return -1
+    def exchange_czk_to(self,currency,ammount):
+        if self.courses.keys().__contains__(currency):
+            return ammount/self.courses[currency]
+        else:
+            return -1

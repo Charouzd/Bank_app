@@ -38,6 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'authentific',
+<<<<<<< Updated upstream
+=======
+    'bank_logic'
+>>>>>>> Stashed changes
     'django_crontab',
 ]
 

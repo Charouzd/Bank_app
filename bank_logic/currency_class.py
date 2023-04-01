@@ -1,6 +1,22 @@
 class Currencies():
-    def __init__(self,file_path):
-        with open(file_path,"r",encoding="utf8")as f:
+    def __init__(self,path):
+        self.file_path=path
+        self.new_dataset()
+        
+    def exchange_into_czk(self,currency, ammount):
+        if self.courses.keys().__contains__(currency):
+            return ammount*self.courses[currency]
+        else:
+            return -1
+        
+    def exchange_czk_to(self,currency,ammount):
+        if self.courses.keys().__contains__(currency):
+            return ammount/self.courses[currency]
+        else:
+            return -1
+        
+    def new_dataset(self):
+        with open(self.file_path,"r",encoding="utf8")as f:
             raw_data=f.read() # data+heading
             tmp=raw_data.split('\n')
             tmp.pop(0)
@@ -15,13 +31,3 @@ class Currencies():
                     y=float(temp[2].replace(",","."))
                     val=x/y
                 self.courses[cur]= val
-    def exchange_into_czk(self,currency, ammount):
-        if self.courses.keys().__contains__(currency):
-            return ammount*self.courses[currency]
-        else:
-            return -1
-    def exchange_czk_to(self,currency,ammount):
-        if self.courses.keys().__contains__(currency):
-            return ammount/self.courses[currency]
-        else:
-            return -1

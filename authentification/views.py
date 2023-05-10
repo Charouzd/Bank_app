@@ -12,45 +12,48 @@ from django.core.mail import EmailMessage
 from bank_app import settings
 from .models import Account
 from .token import account_activation_token
-from time import time
+from datetime import datetime
 
 def activate(request, uidb64, token):
     User = get_user_model()
-    token_with_timestamp = token.split('-')
+    token_with_timestamp = token.split('--')
+
+    dt = datetime.strptime(token_with_timestamp[1], '%Y-%m-%d %H:%M:%S')
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
-        timestamp = int(token_with_timestamp)
-        if timestamp + 300 < int(time.time()):
+        if ((datetime.now()-dt).total_seconds() > 300):
             # Token has expired (300 seconds = 5 minutes)
-            messages.error(request, "Activation link is invalid!")
-            return redirect('home')
-            
+            messages.error(request, "Activation link is expired!")
+            return render(request,"authentification/verify.html",{"time":"wtf","dif":(datetime.now()-dt).total_seconds()})
     except:
         user = None
-
-    if user is not None and account_activation_token.check_token(user, token):
+    if user is not None and account_activation_token.check_token(user,token_with_timestamp[0]):
+        user_extension = Account.objects.get(user=user)
         dic={
             "username":user.username,
             "fname":user.first_name,
-            "name":user.last_name,
-            "mail":user.email
-        }
+            "lname":user.last_name,
+            "mail":user.email,
+            "czk":user_extension.CZK,
+            "currencies": user_extension.Currencies
+            }
+        
 
         messages.success(request, "Thank you for your email confirmation. You are now logged in.")
         return render(request, "account.html",dic)
     else:
-        messages.error(request, "Activation link is invalid!")
-
-    return redirect('home')
+        messages.error(request, "Activation link is invalid! try to logg in again please.")
+    return redirect('signin')
 
 def activateEmail(request, user, to_email):
     mail_subject = "Activate your user account."
+    dt=datetime.now()
     message = render_to_string("authentification/template_activate_account.html", {
         'user': user.username,
         'domain': get_current_site(request).domain,
         'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-        'token': account_activation_token.make_token(user) + '-' + str(int(time.time())),
+        'token': account_activation_token.make_token(user) + '--' +dt.strftime('%Y-%m-%d %H:%M:%S'),
         "protocol": 'https' if request.is_secure() else 'http'
     })
     email = EmailMessage(mail_subject, message, to=[to_email])
@@ -109,22 +112,13 @@ def sign_up(request):
     return render(request, "authentification/signup.html")
 
 def sign_in(request):
-    
     if request.method=="POST":
         uname = request.POST.get("username")
         pass1 = request.POST.get("pass1")
         user = authenticate(username=uname,password=pass1)
         if user is not None:
-            user_extension = Account.objects.get(user=user)
-            fname=user.first_name
-            lname=user.last_name
-            res={
-                "fname":fname,
-                "lname":lname
-            }
             activateEmail(request, user, user.email)
             return render(request,"authentification/verify.html",{"user":user.username, "mail": user.email} )
-        #{"fname":fname,"lname": user.last_name, "logged":user.is_authenticated,"cur": user_extension.Currencies }
         else:
             messages.error(request,"Incorect password or username")
             return redirect("signin")
@@ -134,31 +128,4 @@ def sign_out(request):
     messages.success(request,"You has been successfully logged out")
     return redirect("home")
     # return render(request, "authentification/signout.html")
-    
-def testing(request):
-    # my_user = User.objects.create_user("karlos","email@mail.wtf","123")
-    # my_user.is_active=True
-    # my_user.save()
-    user= authenticate(username="karlos",password="123")
-    if user is not None:
-        # user_extension = Account(user=user)
-        # user_extension.Currencies = {"czk":12358}
-        # user_extension.save()
-        user_extension = Account.objects.get(user=user)
-        user.first_name="karel"
-        user.last_name="karlito"
-        user_extension.Currencies ={"czk": 125,"USD":55}
-        user_extension.Currencies.update({"EUR":1})
-        return render(request,"test.html",{"name":user.username,"mail":user.email,"logged": user.is_authenticated,"cur":user_extension.Currencies})
-    else:
-        
-        messages.error(request,"fail to log")
-        redirect("home")
-    
-    
-def testingOUT(request):
-    user= authenticate(username="karlos",password="123")
-    user_extension = Account.objects.get(user=user)
-    user_extension.delete()
-    redirect("home")
     

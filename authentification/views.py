@@ -15,36 +15,53 @@ from .token import account_activation_token
 from datetime import datetime
 
 def activate(request, uidb64, token):
-    User = get_user_model()
-    token_with_timestamp = token.split('--')
-
-    dt = datetime.strptime(token_with_timestamp[1], '%Y-%m-%d %H:%M:%S')
-    try:
-        uid = force_str(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
-        if ((datetime.now()-dt).total_seconds() > 300):
-            # Token has expired (300 seconds = 5 minutes)
-            messages.error(request, "Activation link is expired!")
-            return render(request,"authentification/verify.html",{"time":"wtf","dif":(datetime.now()-dt).total_seconds()})
-    except:
-        user = None
-    if user is not None and account_activation_token.check_token(user,token_with_timestamp[0]):
+    if request.user is not None:
+        user = request.user
         user_extension = Account.objects.get(user=user)
-        dic={
-            "username":user.username,
-            "fname":user.first_name,
-            "lname":user.last_name,
-            "mail":user.email,
-            "czk":user_extension.CZK,
+        dic = {
+            "username": user.username,
+            "fname": user.first_name,
+            "lname": user.last_name,
+            "mail": user.email,
+            "czk": user_extension.CZK,
             "currencies": user_extension.Currencies
-            }
-        
-
-        messages.success(request, "Thank you for your email confirmation. You are now logged in.")
+        }
         return render(request, "account.html",dic)
     else:
-        messages.error(request, "Activation link is invalid! try to logg in again please.")
-    return redirect('signin')
+        User = get_user_model()
+        token_with_timestamp = token.split('--')
+
+        dt = datetime.strptime(token_with_timestamp[1], '%Y-%m-%d %H:%M:%S')
+        try:
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+            if ((datetime.now()-dt).total_seconds() > 300):
+                # Token has expired (300 seconds = 5 minutes)
+                messages.error(request, "Activation link is expired!")
+                return render(request,"authentification/verify.html",{"time":"wtf","dif":(datetime.now()-dt).total_seconds()})
+        except:
+            user = None
+        if user is not None and account_activation_token.check_token(user,token_with_timestamp[0]):
+            user_extension = Account.objects.get(user=user)
+            login(request, user)
+            request.session['account_id'] = user.username
+            dic={
+                "username":user.username,
+                "fname":user.first_name,
+                "lname":user.last_name,
+                "mail":user.email,
+                "czk":user_extension.CZK,
+                "currencies": user_extension.Currencies,
+                }
+            login(request, user)
+            request.session['account_id'] = user.username
+            
+
+            messages.success(request, "Thank you for your email confirmation. You are now logged in.")
+            return render(request, "account.html",dic)
+        else:
+            messages.error(request, "Activation link is invalid! try to logg in again please.")
+        return redirect('signin')
 
 def activateEmail(request, user, to_email):
     mail_subject = "Activate your user account."

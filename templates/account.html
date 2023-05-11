@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html>
     <head>
         <meta charset="utf-8">
@@ -10,13 +9,16 @@
         <link rel="stylesheet" href="">
     </head>
     <body>
-        <h1> Hello to your account</h1>
-        <div> 
-            User: {% name%}
-            mail: {% mail%}
-            Money: {%money%}
+
+        <h1> Welcome to your account</h1>
+        <div>
+            <h2>User: {{username}}</h2>
+            <ul style="list-style: none">
+                <li>Jméno: {{fname}} {{lname}} </li>
+                <li>E-mail: {{mail}}</li>
+                <li>CZK: {{czk}} </li>
+            </ul>
         </div>
-        
         <script src="" async defer></script>
     </body>
 </html>

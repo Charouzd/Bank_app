@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Transaction history</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <h1>History of transactions</h1>
+        <ul>
+            {% for string in trans %}
+                <li>{{ string }}</li>
+            {% endfor %}
+        </ul>
+        <button type="submit"><a href="/profile">back to account</a></button>
+    </body>
+</html>

@@ -3,16 +3,13 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <meta name="description" content="">
+        <title>Account</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     </head>
     <body>
-
         <h1> Welcome to your account</h1>
         {% for message in messages %}
         <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
@@ -23,7 +20,6 @@
 </button>
         </div>
         {% endfor %}
-
         <div>
             <h2>User: {{username}}</h2>
             <ul style="list-style: none">
@@ -48,6 +44,5 @@
             <button type="submit"><a href="/trans/history">history</a></button><br>
             <button type="submit"><a href="/signout">Sign out</a></button>
         </div>
-        <script src="" async defer></script>
     </body>
 </html>

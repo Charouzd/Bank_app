@@ -11,7 +11,7 @@ def recieve(payment, account, currency):
         account.Currencies[payment_currency] += payment_value
         transaction.status=True
         transaction.save()
-        account.transactioms.add(transaction.id)
+        account.history.add(transaction.id)
         account.save()
         return True
     else:
@@ -21,7 +21,7 @@ def recieve(payment, account, currency):
         account.CZK=round(account.CZK,2)
         transaction.status=True
         transaction.save()
-        account.transactioms.add(transaction.id)
+        account.history.add(transaction.id)
         account.save()
         return True
     return False
@@ -35,7 +35,7 @@ def send(payment, account, currency):
         account.Currencies[payment_currency] -= payment_value
         transaction.status=True
         transaction.save()
-        account.transactioms.add(transaction.id)
+        account.history.add(transaction.id)
         account.save()
         return True
     else:
@@ -47,10 +47,13 @@ def send(payment, account, currency):
                 account.CZK=round(account.CZK,2)
                 transaction.status=True
                 transaction.save()
-                account.transactioms.add(transaction.id)
+                account.history.add(transaction.id)
                 account.save()
                 return True
-    
+    transaction.status=False
+    transaction.save()
+    account.history.add(transaction.id)
+    account.save()
     return False
     
 def new_dataset(file_path):
@@ -90,10 +93,10 @@ def convert_possible(x,y):
     return False
 def delete_history(account):
     # Assume `account` is an existing Account instance
-    account.transactions.clear()
+    account.history.clear()
 
     # Check if transactions have been cleared
-    if account.transactions.exists():
+    if account.history.exists():
         return False
     else:
         return True

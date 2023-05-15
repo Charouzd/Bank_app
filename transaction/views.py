@@ -39,10 +39,9 @@ def donate(request):
 def history(request):
     try:
         account = Account.objects.get(user=request.user)
-        transactions = account.transactions.all()
-        transaction_list = [transaction.__str__() for transaction in transactions]
-        return transaction_list
+        history = account.history.all()
+        transaction_list = [transaction.__str__() for transaction in history]
+        return render(request,"transfer/history.html",{"trans":transaction_list})
     except Account.DoesNotExist:
-        return []
-
-    render("transfer/history.html")
+        return redirect("home")
+    

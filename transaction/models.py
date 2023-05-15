@@ -8,4 +8,24 @@ class Transaction(models.Model):
     status = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"Transaction {self.pk} - Account: {self.account}, Direction: {self.direction}, Currency: {self.currency}, Amount: {self.amount}, Status: {self.status}"
+        # st="Transaction id {self.pk}:"
+        # if {self.direction.upper.__eq__("in")}:
+        #     st+=" + "
+        # else:
+        #     st+=" - "
+        #     st+=(str)({self.amount})+" "+{self.currency}
+        # if{self.status}:
+        #     st+="was "
+        # return f"Transaction id {self.pk}  Account: {self.account}, Direction: {self.direction}, Currency: {self.currency}, Amount: {self.amount}, Status: {self.status}"
+        
+        st = "Transaction id " + str(self.pk) + ": "
+        if self.direction.upper() == "IN":
+            st += "+ "
+        else:
+            st += "- "
+        st += str(self.amount) + " " + self.currency
+        if self.status:
+            st += " was successful"
+        else:
+            st += " failed"
+        return (str)(st)

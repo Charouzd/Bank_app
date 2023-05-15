@@ -8,4 +8,4 @@ class Transaction(models.Model):
     status = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"Transaction {self.pk}"
+        return f"Transaction {self.pk} - Account: {self.account}, Direction: {self.direction}, Currency: {self.currency}, Amount: {self.amount}, Status: {self.status}"

@@ -4,6 +4,7 @@ import random
 from random import randint
 from . import methods
 from django.contrib import messages
+from .models import Transaction
 def transfer(request):
     user=request.user
     user_extension = Account.objects.get(user=user)
@@ -36,4 +37,12 @@ def donate(request):
     user_extension.save()
     return redirect('profile')
 def history(request):
+    try:
+        account = Account.objects.get(user=request.user)
+        transactions = account.transactions.all()
+        transaction_list = [transaction.__str__() for transaction in transactions]
+        return transaction_list
+    except Account.DoesNotExist:
+        return []
+
     render("transfer/history.html")

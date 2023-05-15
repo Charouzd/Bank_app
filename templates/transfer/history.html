@@ -13,10 +13,13 @@
         <link rel="stylesheet" href="">
     </head>
     <body>
-        <!--[if lt IE 7]>
-            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
-        
+        <h1>History of transactions</h1>
+        <ul>
+            {% for string in strings %}
+                <li>{{ string }}</li>
+            {% endfor %}
+        </ul>
+        <button type="submit"><a href="/profile">back to account</a></button>
         <script src="" async defer></script>
     </body>
 </html>

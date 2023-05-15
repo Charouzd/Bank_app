@@ -19,7 +19,7 @@ def profile(request):
         # User is already logged in, redirect to account page
         dic={
             "username": request.user.username,
-            "fname": "user logged before",
+            "fname": request.user.first_name,
             "lname": request.user.last_name,
             "mail": request.user.email,
             "lastlog":request.user.last_login,
@@ -156,5 +156,34 @@ def sign_out(request):
     logout(request)
     messages.success(request,"You has been successfully logged out")
     return redirect("home")
-    # return render(request, "authentification/signout.html")
-    
+
+def change(request):
+    if request.user.is_authenticated:
+        # User is already logged in, redirect to account page
+        dic={
+            "username": request.user.username,
+            "fname": request.user.first_name,
+            "lname": request.user.last_name,
+            "mail": request.user.email,
+            "lastlog":request.user.last_login,
+            }    
+        if request.method == "POST":
+            # Optional -> username = request.POST["username"]
+            username = request.POST.get("username")
+            lname = request.POST.get("lname")
+            fname = request.POST.get("fname")
+            email = request.POST.get("email")
+            user=request.user
+            user.first_name=fname
+            user.last_name=lname
+            user.username=username
+            user.email=email
+            user.save()
+            return redirect('profile')
+        else:
+            return render(request,"authentification/change.html",dic)
+    else:
+        return render(request, "authentification/signin.html")
+            
+
+        

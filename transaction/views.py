@@ -35,3 +35,5 @@ def donate(request):
     user_extension.Currencies={"USD":round(1254.0,2),"EUR":round(159753.0,2),"PLN":round(666.69,2)}
     user_extension.save()
     return redirect('profile')
+def history(request):
+    render("transfer/history.html")

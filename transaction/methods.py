@@ -88,3 +88,12 @@ def convert_possible(x,y):
     if x>=y:
         return True
     return False
+def delete_history(account):
+    # Assume `account` is an existing Account instance
+    account.transactions.clear()
+
+    # Check if transactions have been cleared
+    if account.transactions.exists():
+        return False
+    else:
+        return True

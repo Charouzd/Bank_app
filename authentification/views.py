@@ -128,7 +128,7 @@ def sign_up(request):
         my_user.last_name=lname
         my_user.save()
         user_extension = Account(user=my_user)
-        user_extension.Currencies = {"czk":0}
+        user_extension.Currencies = {"czk":0.0}
         user_extension.save()
         messages.success(request,"Your acount has been successfully created")
         ## Welcome Email

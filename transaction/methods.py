@@ -1,30 +1,41 @@
 from authentification.models import Account
 from django.contrib.auth.models import User
+from .models import Transaction
+
 def recieve(payment, account, currency):
     # Get the currency and value from the payment dictionary
     payment_currency, payment_value = list(payment.items())[0]
-
+    transaction = Transaction.objects.create(account=account.user,direction='in', currency=payment_currency, amount=payment_value)
     # Check if the account has the payment currency
     if payment_currency in account.Currencies:
         account.Currencies[payment_currency] += payment_value
+        transaction.status=True
+        transaction.save()
+        account.transactioms.add(transaction.id)
         account.save()
         return True
     else:
         # Convert the payment into CZK using the currency dictionary
         czk_value = convert_currency(payment_currency, payment_value, currency)
         account.CZK += czk_value
+        account.CZK=round(account.CZK,2)
+        transaction.status=True
+        transaction.save()
+        account.transactioms.add(transaction.id)
         account.save()
         return True
-    
     return False
 
 def send(payment, account, currency):
     # Get the currency and value from the payment dictionary
     payment_currency, payment_value = list(payment.items())[0]
-
+    transaction = Transaction.objects.create(account=account.user,direction='out', currency=payment_currency, amount=payment_value)
     # Check if the account has enough of the payment currency
     if payment_currency in account.Currencies and account.Currencies[payment_currency] >= payment_value:
         account.Currencies[payment_currency] -= payment_value
+        transaction.status=True
+        transaction.save()
+        account.transactioms.add(transaction.id)
         account.save()
         return True
     else:
@@ -32,8 +43,11 @@ def send(payment, account, currency):
         if payment_currency in currency:
             czk_value = payment_value * currency[payment_currency]
             if account.CZK >= czk_value:
-                account.Currencies[payment_currency] = 0
                 account.CZK -= czk_value
+                account.CZK=round(account.CZK,2)
+                transaction.status=True
+                transaction.save()
+                account.transactioms.add(transaction.id)
                 account.save()
                 return True
     
@@ -70,3 +84,7 @@ def convert_currency(from_currency, from_value, currency_rates):
         exchange_rate = currency_rates[to_currency] / currency_rates[from_currency]
         to_value = from_value * exchange_rate
         return to_value
+def convert_possible(x,y):
+    if x>=y:
+        return True
+    return False

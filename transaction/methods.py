@@ -32,7 +32,6 @@ def send(payment, account, currency):
         if payment_currency in currency:
             czk_value = payment_value * currency[payment_currency]
             if account.CZK >= czk_value:
-                account.Currencies[payment_currency] = 0
                 account.CZK -= czk_value
                 account.save()
                 return True

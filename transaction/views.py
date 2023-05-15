@@ -13,7 +13,7 @@ def transfer(request):
         rnd=randint(1,9999)
         payment={curr:rnd}
         if not methods.send(payment,user_extension,course) :
-            messages.error(request, 'Sorry your transaction -'+(str(rnd))+curr+' was canceled due to lack of capital')
+            messages.error(request, 'With deep regrets we have to inform you, that your transaction  - '+(str(rnd))+curr+' was canceled due to lack of capital')
         else:
             messages.success(request,'Your payment '+(str(rnd))+curr+' was compleated succesfully')
         # user_extension.Currencies=methods.get_dict_of_used_currencies(user_extension.Currencies)
@@ -24,14 +24,14 @@ def transfer(request):
         payment={curr:rnd}
         
         if not methods.recieve(payment,user_extension,course):
-             messages.error(request, 'Sorry your transaction +'+(str(rnd))+curr+' was canceled due to lack of capital')  
+             messages.error(request, 'With deep regrets we have to inform you, that your transaction -'+(str(rnd))+curr+' was canceled due to lack of capital')  
         else:
             messages.success(request,"Your account just recieved "+(str(rnd))+curr)
     return redirect("profile")
 def donate(request):
     user=request.user
     user_extension = Account.objects.get(user=user)
-    user_extension.CZK+=10000
+    user_extension.CZK=20000
     user_extension.Currencies={"USD":1254,"EUR":159753,"PLN":666}
     user_extension.save()
     return redirect('profile')

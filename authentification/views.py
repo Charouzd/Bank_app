@@ -111,17 +111,17 @@ def sign_up(request):
         ## Podminky pro uspesne vytvoreni uctu
         if User.objects.filter(username=username):
             messages.error(request, "Username already exist! Please try some other username.")
-            return redirect('home')
+            return redirect('signup')
         
         if User.objects.filter(email=email).exists():
             messages.error(request, "Email Already Registered!!")
-            return redirect('home')
+            return redirect('signup')
         if pass1 != pass2:
             messages.error(request, "Passwords didn't matched!!")
-            return redirect('home')
+            return redirect('signup')
         if not username.isalnum():
             messages.error(request, "Username must be Alpha-Numeric!!")
-            return redirect('home')
+            return redirect('signup')
         ## vytvareni zapis do databaze
         my_user = User.objects.create_user(username,email,pass1)
         my_user.first_name=fname

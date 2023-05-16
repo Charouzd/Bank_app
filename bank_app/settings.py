@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import dj_database_url
 from pathlib import Path
 from . info import *
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -29,9 +29,9 @@ PASSWORD_RESET_TIMEOUT = 14400
 SECRET_KEY = 'django-insecure-%f&70xqcfjxpbcskms3!bpz*tcpr+o&wfnpt24-fg&m2w+oaq7'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -81,13 +81,16 @@ WSGI_APPLICATION = 'bank_app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+DATABASES ={
+    'default':dj_database_url.parse('postgres://bankappdb_user:oQoH3RW4ot0UMBDK6bURYeDWQSId8C4k@dpg-chhmrp5269v0od0n49b0-a.frankfurt-postgres.render.com/bankappdb')
+    
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

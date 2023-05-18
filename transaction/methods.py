@@ -64,14 +64,17 @@ def new_dataset(file_path):
             tmp.pop(0)
             courses={}
             for line in tmp:#unseparated data
-                temp=line.split('|')#separated data in form (0)země,(1)měna,(2)množství,(3)kód,(4)kurz
-                cur=temp[3]
-                val=(float)(temp[4].replace(",","."))
-                if tmp[2] != "1":
-                    x=float(temp[4].replace(",","."))
-                    y=float(temp[2].replace(",","."))
-                    val=x/y
-                courses[cur]= val
+                try:    
+                    temp=line.split('|')#separated data in form (0)země,(1)měna,(2)množství,(3)kód,(4)kurz
+                    cur=temp[3]
+                    val=(float)(temp[4].replace(",","."))
+                    if tmp[2] != "1":
+                        x=float(temp[4].replace(",","."))
+                        y=float(temp[2].replace(",","."))
+                        val=x/y
+                    courses[cur]= val
+                except:
+                    continue
             courses.update({'CZK':1})
         return courses
     except:

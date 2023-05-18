@@ -31,3 +31,4 @@ Thajsko|baht|100|THB|63,665
 Turecko|lira|1|TRY|1,105
 USA|dolar|1|USD|21,826
 Velká Británie|libra|1|GBP|27,203
+ 

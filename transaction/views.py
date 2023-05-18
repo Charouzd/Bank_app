@@ -5,6 +5,7 @@ from random import randint
 from . import methods
 from django.contrib import messages
 from .models import Transaction
+import urllib.request
 def transfer(request):
     if request.user.is_authenticated:
         user=request.user
@@ -52,3 +53,11 @@ def history(request):
     except:
         return redirect("home")
     
+def course(request):
+    url = "https://www.cnb.cz/cs/financni-trhy/devizovy-trh/kurzy-devizoveho-trhu/kurzy-devizoveho-trhu/denni_kurz.txt"
+    file_path = "transaction\cnb.txt"
+    try:
+        urllib.request.urlretrieve(url, file_path)
+        return True
+    except Exception as e:
+        return False

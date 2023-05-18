@@ -1,0 +1,5 @@
+30.03.2023 #64
+země|měna|množství|kód|kurz
+EMU|euro|1|EUR|23,550
+Polsko|zlotý|1|PLN|5,031
+USA|dolar|1|USD|21,633

@@ -24,7 +24,6 @@ def recieve(payment, account, currency):
         account.history.add(transaction.id)
         account.save()
         return True
-    return False
 
 def send(payment, account, currency):
     # Get the currency and value from the payment dictionary

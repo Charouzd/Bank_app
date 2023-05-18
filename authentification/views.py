@@ -27,7 +27,8 @@ def profile(request):
             "currencies": request.user.account.Currencies,
         }
         return render(request, "account.html", dic)
-    return redirect('signin')
+    else:
+        return redirect('signin')
     
 def activate(request, uidb64, token):
     if request.user.is_authenticated:
@@ -127,8 +128,7 @@ def sign_up(request):
         my_user.first_name=fname
         my_user.last_name=lname
         my_user.save()
-        user_extension = Account(user=my_user)
-        user_extension.Currencies = {"czk":0.0}
+        user_extension = Account.objects.create(user=my_user)
         user_extension.save()
         messages.success(request,"Your acount has been successfully created")
         ## Welcome Email
@@ -184,6 +184,3 @@ def change(request):
             return render(request,"authentification/change.html",dic)
     else:
         return render(request, "authentification/signin.html")
-            
-
-        

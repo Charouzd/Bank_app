@@ -57,34 +57,34 @@ def send(payment, account, currency):
     return False
     
 def new_dataset(file_path):
-    with open(file_path,"r",encoding="utf8")as f:
-        raw_data=f.read() # data+heading
-        tmp=raw_data.split('\n')
-        tmp.pop(0)
-        tmp.pop(0)
-        courses={}
-        for line in tmp:#unseparated data
-            temp=line.split('|')#separated data in form (0)země,(1)měna,(2)množství,(3)kód,(4)kurz
-            cur=temp[3]
-            val=(float)(temp[4].replace(",","."))
-            if tmp[2] != "1":
-                x=float(temp[4].replace(",","."))
-                y=float(temp[2].replace(",","."))
-                val=x/y
-            courses[cur]= val
-        courses.update({'CZK':1})
-    return courses
-def get_dict_of_used_currencies(curr):
-    return {k: v for k, v in curr.items() if v != 0}
-
+    try:
+        with open(file_path,"r",encoding="utf8")as f:
+            raw_data=f.read() # data+heading
+            tmp=raw_data.split('\n')
+            tmp.pop(0)
+            tmp.pop(0)
+            courses={}
+            for line in tmp:#unseparated data
+                temp=line.split('|')#separated data in form (0)země,(1)měna,(2)množství,(3)kód,(4)kurz
+                cur=temp[3]
+                val=(float)(temp[4].replace(",","."))
+                if tmp[2] != "1":
+                    x=float(temp[4].replace(",","."))
+                    y=float(temp[2].replace(",","."))
+                    val=x/y
+                courses[cur]= val
+            courses.update({'CZK':1})
+        return courses
+    except:
+        return None
 def convert_currency(from_currency, from_value, currency_rates):
     to_currency = 'CZK'
     if from_currency == to_currency:
         return from_value
-    elif from_currency not in currency_rates or to_currency not in currency_rates:
+    elif from_currency not in currency_rates:
         return None
     else:
-        exchange_rate = currency_rates[to_currency] / currency_rates[from_currency]
+        exchange_rate =  currency_rates[from_currency]
         to_value = from_value * exchange_rate
         return to_value
 def convert_possible(x,y):
@@ -94,7 +94,6 @@ def convert_possible(x,y):
 def delete_history(account):
     # Assume `account` is an existing Account instance
     account.history.clear()
-
     # Check if transactions have been cleared
     if account.history.exists():
         return False

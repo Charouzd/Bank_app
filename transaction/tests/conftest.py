@@ -58,3 +58,37 @@ def fpayment(client,user_data):
         "CZK":1
     }
     return { 'payment':p ,'account':test_account,"currency":cur}
+@pytest.fixture
+def kontokorent_payment(client,user_data):
+    p={"EUR":1000}
+    test_user = User.objects.create_user(**user_data)
+    test_user.set_password(user_data.get('password'))
+    test_user.save()
+    client.login(**user_data)
+    test_account = Account.objects.create(user=test_user)
+    test_account.CZK=1000
+    test_account.Currencies={"EUR":1000}
+    test_account.save()
+    cur={
+        "USD":20,
+        "EUR":10,
+        "CZK":1
+    }
+    return { 'payment':p ,'account':test_account,"currency":cur}
+@pytest.fixture
+def fkontokorent_payment(client,user_data):
+    p={"EUR":1000}
+    test_user = User.objects.create_user(**user_data)
+    test_user.set_password(user_data.get('password'))
+    test_user.save()
+    client.login(**user_data)
+    test_account = Account.objects.create(user=test_user)
+    test_account.CZK=10
+    test_account.Currencies={"EUR":1}
+    test_account.save()
+    cur={
+        "USD":20,
+        "EUR":10,
+        "CZK":1
+    }
+    return { 'payment':p ,'account':test_account,"currency":cur}

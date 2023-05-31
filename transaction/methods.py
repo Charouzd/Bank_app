@@ -30,8 +30,17 @@ def send(payment, account, currency):
     payment_currency, payment_value = list(payment.items())[0]
     transaction = Transaction.objects.create(account=account.user,direction='out', currency=payment_currency, amount=payment_value)
     # Check if the account has enough of the payment currency
-    if payment_currency in account.Currencies and account.Currencies[payment_currency] >= payment_value:
+    balance=account.Currencies
+    if payment_currency in account.Currencies and balance[payment_currency] >= payment_value and payment_value>=0:# just pay the price
         account.Currencies[payment_currency] -= payment_value
+        transaction.status=True
+        transaction.save()
+        account.history.add(transaction.id)
+        account.save()
+        return True
+    elif payment_currency in account.Currencies and balance[payment_currency]*1.1 > payment_value and payment_value>=0:#kontokorent price
+        account.Currencies[payment_currency] -= payment_value
+        account.Currencies[payment_currency] += (account.Currencies[payment_currency]+(account.Currencies[payment_currency]*0.1))
         transaction.status=True
         transaction.save()
         account.history.add(transaction.id)
@@ -43,6 +52,15 @@ def send(payment, account, currency):
             czk_value = payment_value * currency[payment_currency]
             if account.CZK >= czk_value:
                 account.CZK -= czk_value
+                account.CZK=round(account.CZK,2)
+                transaction.status=True
+                transaction.save()
+                account.history.add(transaction.id)
+                account.save()
+                return True
+            elif account.CZK*1.1 >= czk_value:#kontokorent po převodu
+                account.CZK -= czk_value
+                account.CZK = account.CZK*1.1
                 account.CZK=round(account.CZK,2)
                 transaction.status=True
                 transaction.save()

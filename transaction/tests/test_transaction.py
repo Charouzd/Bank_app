@@ -83,6 +83,10 @@ def test_new_dataset():
 def test_send_ok(payment):
     assert m.send(payment.get('payment'),payment.get('account'),payment.get('currency'))==True
 @pytest.mark.django_db
+def test_send_kotokorent_ok(kontokorent_payment):
+    assert m.send(kontokorent_payment.get('payment'),kontokorent_payment.get('account'),kontokorent_payment.get('currency'))==True
+    
+@pytest.mark.django_db
 def test_send_fail(fpayment):
     assert m.send(fpayment.get('payment'),fpayment.get('account'),fpayment.get('currency'))==False
 @pytest.mark.django_db

@@ -61,3 +61,28 @@ def course(request):
         return True
     except Exception as e:
         return False
+def showcase_prep(request):
+    if request.user.is_authenticated:
+        user=request.user
+        user_extension = Account.objects.get(user=user)
+        user_extension.CZK=round(1000.0,2)
+        user_extension.Currencies={"USD":round(100.0,2),"EUR":round(100.0,2)}
+        user_extension.save()
+        return redirect('profile')
+    else:
+        return redirect('signin')
+def showcase(request):
+    if request.user.is_authenticated:
+        user=request.user
+        user_extension = Account.objects.get(user=user)
+        course=methods.new_dataset('transaction/cnb.txt')
+        curr= 'CZK'
+        rnd=1090.0
+        payment={curr:rnd}
+        if not methods.send(payment,user_extension,course) :
+                messages.error(request, 'With deep regrets we have to inform you, that your transaction  - '+(str(rnd))+curr+' was canceled due to lack of capital')
+        else:
+            #messages.success(request,'Your payment '+(str(rnd))+curr+' was compleated succesfully')
+            messages.success(request,'Your payment '+(str(rnd))+curr+' was compleated succesfully')
+        return redirect('profile')
+    return redirect('signin')
